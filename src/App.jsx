@@ -1,91 +1,101 @@
-import { useState } from 'react';
-import './App.css';
-
+import './App.css'
+import {useState} from 'react' 
 function App() {
-  const [toDos, setToDos] = useState([]);
-  const [toDo, setToDo] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState(null);
-
-  const handleAddOrEdit = () => {
-    if (isEditing) {
-      setToDos(toDos.map(obj => 
-        obj.id === editId ? { ...obj, text: toDo } : obj
-      ));
-      setIsEditing(false);
-      setEditId(null);
-    } else {
-      setToDos([...toDos, { id: Date.now(), text: toDo, status: false }]);
-    }
-    setToDo('');
-  };
-
-  const handleDelete = (id) => {
-    setToDos(toDos.filter(obj => obj.id !== id));
-  };
-
-  const handleEdit = (id, text) => {
-    setIsEditing(true);
-    setEditId(id);
-    setToDo(text);
-  };
-
+  const [toDos,setToDos] = useState([])
+  const [toDo,setToDo] = useState('')
+  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const currentDay = daysOfWeek[new Date().getDay()]; 
   return (
-    <>
-      <div className="app">
-        <div className="mainHeading">
-          <h1>ToDo List</h1>
-        </div>
-        <div className="subHeading">
-          <br />
-          <h2>Whoop, it's Wednesday 🌝 ☕</h2>
-        </div>
-        <div className="input">
-          <input
-            value={toDo}
-            onChange={(e) => setToDo(e.target.value)}
-            type="text"
-            placeholder={isEditing ? "✏️ Edit item..." : "🖊️ Add item..."}
-          />
-          <i onClick={handleAddOrEdit} className="fas fa-plus"></i>
-        </div>
-        <div className="todos">
-          {toDos.map((obj) => {
-            return (
-              <div className="todo" key={obj.id}>
-                <div className="left">
-                  <input
-                    onChange={(e) => {
-                      setToDos(
-                        toDos.map(obj2 => 
-                          obj2.id === obj.id ? { ...obj2, status: e.target.checked } : obj2
-                        )
-                      );
-                    }}
-                    checked={obj.status}
-                    type="checkbox"
-                  />
-                  <p style={{ textDecoration: obj.status ? "line-through" : "none" }}>
-                    {obj.text}
-                  </p>
-                </div>
-                <div className="right">
-                  <i
-                    onClick={() => handleEdit(obj.id, obj.text)}
-                    className="fas fa-edit"
-                  ></i>
-                  <i
-                    onClick={() => handleDelete(obj.id)}
-                    className="fas fa-times"
-                  ></i>
-                </div>
+    <div className="app">
+      <div className="mainHeading">
+        <h1>To Do List</h1>
+      </div>
+      <div className="subHeading">
+        <br />
+        <h2>Whoop, it's {currentDay} 🌝 ☕ </h2>
+      </div>
+      <div className="input">
+        <input value={toDo} onChange={(eve)=>setToDo(eve.target.value)}  type="text" placeholder="🖊️ Add item..." />
+        <i onClick={()=>setToDos([...toDos,{id:Date.now(), text:toDo, status:false}])} className="fas fa-plus"></i>
+      </div>
+      <div className="todos">
+      {toDos.map((obj, index) => {
+        return (
+          <div className="todo" key={obj.id}>
+            <div className="left">
+              <input
+                onChange={(eve) => {
+                  setToDos(
+                    toDos.map((obj2) => {
+                      if (obj2.id === obj.id) {
+                        obj2.status = eve.target.checked;
+                      }
+                      return obj2;
+                    })
+                  );
+                }}
+                checked={obj.status}
+                type="checkbox"
+              />
+            
+              {obj.isEditing ? (
+                <input
+                  type="text"
+                  value={obj.text}
+                  onChange={(e) => {
+                    setToDos(
+                      toDos.map((obj2) => {
+                        if (obj2.id === obj.id) {
+                          obj2.text = e.target.value;
+                        }
+                        return obj2;
+                      })
+                    );
+                  }}
+                />
+              ) : (
+                <p>{obj.text}</p>
+              )}
+            </div>
+
+            <div className="right">
+              <div className="mid-right">
+                <button
+                  onClick={() => {
+                    setToDos(
+                      toDos.map((obj2) => {
+                        if (obj2.id === obj.id) {
+                          obj2.isEditing = !obj2.isEditing; 
+                        }
+                        return obj2;
+                      })
+                    );
+                  }}
+                >
+                  {obj.isEditing ? "Save" : "Edit"}
+                </button>
               </div>
-            );
-          })}
+              <i
+                className="fas fa-times"
+                onClick={() => {
+                  setToDos(toDos.filter((obj3) => obj3.id !== obj.id));
+                }}
+              ></i>
+            </div>
+          </div>
+        );
+      })}
+
+        <div className='completed-todos'>
+        {toDos.map((obj)=>{
+          if(obj.status){
+            return (<h1>{obj.text}</h1>) 
+          }
+          return null
+        })}
         </div>
       </div>
-    </>
+    </div>
   );
 }
-
 export default App;

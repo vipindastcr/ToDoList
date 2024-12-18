@@ -4,7 +4,7 @@
 }
 
 body {
-  background-color: #020631;
+  background-color:#a1b8df;
 }
 
 .app {
@@ -20,7 +20,7 @@ body {
 
 .app h1,
 h2 {
-  color: white;
+  color: black;
 }
 
 .app .input {
@@ -77,11 +77,23 @@ h2 {
   justify-content: flex-start;
   align-items: center;
 }
-
+.app .todos .todo .mid-right{
+    cursor: pointer;
+    font-size: small;
+    font-weight: 00;
+    color: grey;
+    margin-right: 7px;
+}
 .app .todos .todo .left p {
   margin-left: 3px;
   font-size: medium;
   font-weight: 700;
   font-style: normal;
   color: grey;
+}
+
+.app .todos .todo .right {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
 }
